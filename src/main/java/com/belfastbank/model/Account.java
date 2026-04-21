@@ -97,7 +97,7 @@ public abstract class Account {
 
     // get transaction history
     public List<Transaction> getTransactionHistory() {
-        return transactions;
+        return new ArrayList<>(transactions);
     }
 
     // set balance (protected method)
