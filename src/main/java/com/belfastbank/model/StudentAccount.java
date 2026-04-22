@@ -15,6 +15,11 @@ public class StudentAccount extends Account {
     }
 
     @Override
+    public String getAccountType() {
+        return "Savings Account";
+    }
+
+    @Override
     public void withdraw(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidTransactionException("Withdrawal must be greater than zero");

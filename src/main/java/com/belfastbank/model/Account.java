@@ -74,6 +74,7 @@ public abstract class Account {
      * @param amount - the amount to withdraw, must be greater than zero
      */
     public abstract void withdraw(BigDecimal amount);
+    public abstract String getAccountType();
 
     // get account no.
     public String getAccountNo() {

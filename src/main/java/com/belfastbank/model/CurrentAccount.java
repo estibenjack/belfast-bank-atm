@@ -21,6 +21,11 @@ public class CurrentAccount extends Account {
     }
 
     @Override
+    public String getAccountType() {
+        return "Current Account";
+    }
+
+    @Override
     public void withdraw(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidTransactionException("Withdrawal must be greater than zero");
