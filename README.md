@@ -35,7 +35,7 @@ src/
 2. Open in IntelliJ IDEA
 3. Run `Main.java`
 
-Test credentials are printed at the start of the program.
+*Test credentials are printed at the start of the program.*
 
 ## Design Decisions
 - `BigDecimal` used for all monetary values to avoid floating point errors
