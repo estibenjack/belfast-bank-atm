@@ -108,4 +108,8 @@ public abstract class Account {
     protected void setBalance(BigDecimal newBalance) {
         this.balance = newBalance;
     }
+
+    protected void recordTransaction(TransactionType type, BigDecimal amount) {
+        transactions.add(new Transaction(type, amount));
+    }
 }
