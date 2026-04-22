@@ -52,5 +52,5 @@ Test credentials are printed at the start of the program.
 - Account numbers randomly generated and could theoretically produce duplicates
 
 ## Status
-✅ Core features complete
-🚧 JSON persistence coming soon
+- Core features complete ✅
+- JSON persistence coming soon 🚧
