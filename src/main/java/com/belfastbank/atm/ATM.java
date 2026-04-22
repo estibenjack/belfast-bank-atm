@@ -1,10 +1,13 @@
 package com.belfastbank.atm;
 
+import com.belfastbank.exception.InvalidTransactionException;
 import com.belfastbank.model.Account;
 import com.belfastbank.model.Customer;
+import com.belfastbank.model.Transaction;
 import com.belfastbank.service.AccountService;
 import com.belfastbank.service.CustomerService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
@@ -75,6 +78,7 @@ public class ATM {
         if (availableAccounts.size()==1) {
             this.selectedAccount=availableAccounts.getFirst();
         } else {
+            System.out.println();
             printHeading("Select Account");
             for (int i=0; i<availableAccounts.size(); i++){
                 System.out.printf("%d. %s (****%s)%n", i+1, availableAccounts.get(i).getAccountType(), availableAccounts.get(i).getAccountNo().substring(4));
@@ -102,6 +106,7 @@ public class ATM {
     public void showMenu(){
         int choice=-1;
         while (true) {
+            System.out.println();
             printHeading("Belfast Bank ATM");
             System.out.println("1. Check Balance");
             System.out.println("2. Withdraw");
@@ -119,6 +124,7 @@ public class ATM {
                            break;
                        case 2:
                            handleWithdraw();
+                           if (loggedInCustomer == null) return;
                            break;
                        case 3:
                            handleDeposit();
@@ -142,10 +148,90 @@ public class ATM {
 
     }
 
-    private void handleBalance(){}
-    private void handleWithdraw(){}
-    private void handleDeposit(){}
-    private void handleMiniStatement(){}
+    private void handleBalance(){
+        System.out.println();
+        printHeading("Account Balance");
+        System.out.printf("%s (****%s)", selectedAccount.getAccountType(), selectedAccount.getAccountNo().substring(4));
+        System.out.printf("%nAvailable Balance: £%.2f%n", accountService.getBalance(selectedAccount));
+        printDivider();
+        System.out.println("Press Enter to return to menu...");
+        scanner.nextLine();
+    }
+
+    private void handleWithdraw(){
+        System.out.println();
+        printHeading("Withdraw");
+
+        BigDecimal withdrawalAmount = null;
+        while (true) {
+            System.out.print("Enter amount to withdraw: £");
+            try {
+                withdrawalAmount = new BigDecimal(scanner.nextLine().trim());
+                if (withdrawalAmount.compareTo(BigDecimal.ZERO)>0) {
+                    break;
+                }
+                System.out.println("Amount must be greater than zero.");
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid selection. Please try again: ");
+            }
+        }
+        printProcessing();
+        try {
+            accountService.withdraw(selectedAccount, withdrawalAmount);
+            System.out.println("Your card has been returned.");
+            System.out.println("Please take your cash.");
+            System.out.printf("%nGoodbye, %s!%n", loggedInCustomer.getName());
+            printDivider();
+            loggedInCustomer=null;
+            selectedAccount=null;
+        } catch (InvalidTransactionException e) {
+            System.out.println("Transaction failed: " + e.getMessage());
+            System.out.println("Press Enter to return to menu...");
+            scanner.nextLine();
+            return;
+        }
+    }
+
+    private void handleDeposit(){
+        System.out.println();
+        printHeading("Deposit");
+
+        BigDecimal depositAmount = null;
+        while (true) {
+            System.out.print("Enter amount to deposit: £");
+            try {
+                depositAmount = new BigDecimal(scanner.nextLine().trim());
+                if (depositAmount.compareTo(BigDecimal.ZERO)>0) {
+                    break;
+                }
+                System.out.println("Amount must be greater than zero.");
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid selection. Please try again: ");
+            }
+        }
+        printProcessing();
+        accountService.deposit(selectedAccount, depositAmount);
+        System.out.printf("£%.2f deposited successfully.", depositAmount);
+        System.out.printf("%nNew balance: £%.2f%n", accountService.getBalance(selectedAccount));
+        printDivider();
+        System.out.print("Press Enter to return to menu...");
+        scanner.nextLine();
+    }
+
+    private void handleMiniStatement(){
+        System.out.println();
+        printHeading("Mini Statement");
+        System.out.printf("%s (****%s)", selectedAccount.getAccountType(), selectedAccount.getAccountNo().substring(4));
+        System.out.println();
+        System.out.printf("%s\t\t%s\t%s%n", "DATE", "TYPE", "AMOUNT");
+        for (Transaction t : accountService.getMiniStatement(selectedAccount)) {
+            System.out.printf("%s\t\t%s\t£%.2f%n", t.getTimestamp().toLocalDate(), t.getTransactionTypeStr(), t.getAmount());
+        }
+        System.out.println();
+        printDivider();
+        System.out.println("Press Enter to return to menu...");
+        scanner.nextLine();
+    }
 
     private void printHeading(String title) {
         printDivider();
@@ -155,6 +241,20 @@ public class ATM {
 
     private void printDivider() {
         System.out.println("=========================================");
+    }
+
+    private void printProcessing() {
+        try {
+            System.out.print("\nProcessing");
+            Thread.sleep(800);
+            System.out.print(".");
+            Thread.sleep(800);
+            System.out.print(".");
+            Thread.sleep(800);
+            System.out.println(".\n");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 }
