@@ -26,5 +26,6 @@ public class StudentAccount extends Account {
             throw new InvalidTransactionException("Can't exceed £500 overdraft");
         }
         setBalance(getBalance().subtract(amount));
+        recordTransaction(TransactionType.WITHDRAWAL, amount);
     }
 }

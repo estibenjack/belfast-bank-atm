@@ -30,6 +30,7 @@ public class SavingsAccount extends Account {
             throw new InvalidTransactionException("Insufficient funds");
         }
         setBalance(getBalance().subtract(amount));
+        recordTransaction(TransactionType.WITHDRAWAL, amount);
         monthlyWithdrawalCount++;
     }
 

@@ -29,6 +29,7 @@ public class CurrentAccount extends Account {
             throw new InvalidTransactionException("Exceeds overdraft limit");
         }
         setBalance(getBalance().subtract(amount));
+        recordTransaction(TransactionType.WITHDRAWAL, amount);
     }
 
 }
