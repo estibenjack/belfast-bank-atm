@@ -35,6 +35,8 @@ src/
 2. Open in IntelliJ IDEA
 3. Run `Main.java`
 
+Test credentials are printed at the start of the program.
+
 ## Design Decisions
 - `BigDecimal` used for all monetary values to avoid floating point errors
 - Abstract `Account` class with account-specific withdrawal rules in each subclass
@@ -48,3 +50,7 @@ src/
 - PINs stored as plain text — in production would use BCrypt hashing
 - Card numbers are 8 digits for simplicity — real card numbers are 16 digits and follow the Luhn algorithm
 - Account numbers randomly generated and could theoretically produce duplicates
+
+## Status
+✅ Core features complete
+🚧 JSON persistence coming soon
